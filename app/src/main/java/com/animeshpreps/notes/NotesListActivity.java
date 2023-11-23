@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -57,5 +58,8 @@ public class NotesListActivity extends AppCompatActivity implements NotesRecycle
     @Override
     public void onNoteClick(int position) {
         Log.d(TAG, "onNoteClick: clicked." + position);
+
+        Intent intent = new Intent(this, NoteActivity.class);
+        startActivity(intent);
     }
 }
