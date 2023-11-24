@@ -124,6 +124,7 @@ public class NoteActivity extends AppCompatActivity implements
         mGestureDetector = new GestureDetector(this, this);
         mViewTitle.setOnClickListener(this);
         mCheck.setOnClickListener(this);
+        mBackArrow.setOnClickListener(this);
     }
 
     private boolean getIncomingIntent() {
@@ -216,6 +217,9 @@ public class NoteActivity extends AppCompatActivity implements
                 mEditTitle.requestFocus();
                 mEditTitle.setSelection(mEditTitle.length());
                 enableEditMode();
+                break;
+            case R.id.toolbar_back_arrow:
+                finish();
                 break;
         }
     }
