@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -17,13 +19,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.animeshpreps.notes.models.Note;
+import com.animeshpreps.notes.persistance.NoteRepository;
 import com.animeshpreps.notes.util.LinedEditText;
 
 public class NoteActivity extends AppCompatActivity implements
         View.OnTouchListener,
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener,
-        View.OnClickListener
+        View.OnClickListener,
+        TextWatcher
 {
 
     private static final String TAG = "NoteActivity";
@@ -43,6 +47,8 @@ public class NoteActivity extends AppCompatActivity implements
     private Note mInitialNote;
     private GestureDetector mGestureDetector;
     private int mMode;
+    private NoteRepository mNoteRepository;
+    private Note mFinalNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,8 @@ public class NoteActivity extends AppCompatActivity implements
         mBackArrowContainer = findViewById(R.id.back_arrow_container);
         mCheck = findViewById(R.id.toolbar_check);
         mBackArrow = findViewById(R.id.toolbar_back_arrow);
+
+        mNoteRepository = new NoteRepository(this);
 
         if (getIncomingIntent()) {
             // this is a new note (EDIT MODE)
@@ -108,6 +116,23 @@ public class NoteActivity extends AppCompatActivity implements
 
         disableContentInteraction();
         hideSoftKeyboard();
+
+        String temp = mLinedEditText.getText().toString();
+        temp = temp.replace("\n", "");
+        temp = temp.replace(" ", "");
+        if (temp.length() > 0) {
+            mFinalNote.setTitle(mEditTitle.getText().toString());
+            mFinalNote.setContent(mLinedEditText.getText().toString());
+            String timestamp = "Jan 2023";
+            mFinalNote.setTimestamp(timestamp);
+
+            if (!mFinalNote.getContent().equals(mInitialNote.getContent())
+                || !mFinalNote.getTitle().equals(mInitialNote.getTitle())
+            ) {
+                saveChanges();
+            }
+        }
+
     }
 
     private void hideSoftKeyboard() {
@@ -125,12 +150,14 @@ public class NoteActivity extends AppCompatActivity implements
         mViewTitle.setOnClickListener(this);
         mCheck.setOnClickListener(this);
         mBackArrow.setOnClickListener(this);
+        mEditTitle.addTextChangedListener(this);
     }
 
     private boolean getIncomingIntent() {
         if (getIntent().hasExtra("selected_note")) {
 
             mInitialNote = getIntent().getParcelableExtra("selected_note");
+            mFinalNote = getIntent().getParcelableExtra("selected_note");
 
             mMode = EDIT_MODE_DISABLED;
             mIsNewNote = false;
@@ -139,6 +166,18 @@ public class NoteActivity extends AppCompatActivity implements
         mMode = EDIT_MODE_ENABLED;
         mIsNewNote = true;
         return true;
+    }
+
+    private void saveChanges() {
+        if (mIsNewNote) {
+            saveNewNote();
+        } else {
+
+        }
+    }
+
+    private void saveNewNote() {
+        mNoteRepository.insertNoteTask(mFinalNote);
     }
 
     private void setNoteProperties() {
@@ -150,6 +189,11 @@ public class NoteActivity extends AppCompatActivity implements
     private void setNewNoteProperties() {
         mViewTitle.setText("Note Title");
         mEditTitle.setText("Note Title");
+
+        mInitialNote = new Note();
+        mFinalNote = new Note();
+        mInitialNote.setTitle("Note Title");
+        mFinalNote.setTitle("Note Title");
     }
 
     @Override
@@ -246,5 +290,20 @@ public class NoteActivity extends AppCompatActivity implements
         if (mMode == EDIT_MODE_ENABLED) {
             enableEditMode();
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        mViewTitle.setText(charSequence.toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
     }
 }
