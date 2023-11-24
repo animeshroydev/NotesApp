@@ -4,11 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -62,10 +64,27 @@ public class NoteActivity extends AppCompatActivity implements
         } else {
             // this is not a new note (VIEW MODE)
             setNoteProperties();
+            disableContentInteraction();
         }
 
         setListener();
 
+    }
+
+    private void disableContentInteraction() {
+        mLinedEditText.setKeyListener(null);
+        mLinedEditText.setFocusable(false);
+        mLinedEditText.setFocusableInTouchMode(false);
+        mLinedEditText.setCursorVisible(false);
+        mLinedEditText.clearFocus();
+    }
+
+    private void enableContentInteraction() {
+        mLinedEditText.setKeyListener(new EditText(this).getKeyListener());
+        mLinedEditText.setFocusable(true);
+        mLinedEditText.setFocusableInTouchMode(true);
+        mLinedEditText.setCursorVisible(true);
+        mLinedEditText.requestFocus();
     }
 
     private void enableEditMode() {
@@ -75,6 +94,8 @@ public class NoteActivity extends AppCompatActivity implements
         mEditTitle.setVisibility(View.VISIBLE);
 
         mMode = EDIT_MODE_ENABLED;
+
+        enableContentInteraction();
     }
 
     private void disableEditMode() {
@@ -84,6 +105,18 @@ public class NoteActivity extends AppCompatActivity implements
         mEditTitle.setVisibility(View.GONE);
 
         mMode = EDIT_MODE_DISABLED;
+
+        disableContentInteraction();
+        hideSoftKeyboard();
+    }
+
+    private void hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = this.getCurrentFocus();
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void setListener() {
@@ -176,6 +209,7 @@ public class NoteActivity extends AppCompatActivity implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.toolbar_check:
+                hideSoftKeyboard();
                 disableEditMode();
                 break;
             case R.id.note_text_title:
