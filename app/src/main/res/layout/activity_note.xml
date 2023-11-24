@@ -18,7 +18,9 @@
             android:layout_width="match_parent"
             app:title="@string/app_name"
             android:background="?attr/colorPrimary"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/activity_note_toolbar"/>
 
         </androidx.appcompat.widget.Toolbar>
 
