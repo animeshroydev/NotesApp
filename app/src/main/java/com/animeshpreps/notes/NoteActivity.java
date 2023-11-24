@@ -20,7 +20,8 @@ import com.animeshpreps.notes.util.LinedEditText;
 public class NoteActivity extends AppCompatActivity implements
         View.OnTouchListener,
         GestureDetector.OnGestureListener,
-        GestureDetector.OnDoubleTapListener
+        GestureDetector.OnDoubleTapListener,
+        View.OnClickListener
 {
 
     private static final String TAG = "NoteActivity";
@@ -88,6 +89,8 @@ public class NoteActivity extends AppCompatActivity implements
     private void setListener() {
         mLinedEditText.setOnTouchListener(this);
         mGestureDetector = new GestureDetector(this, this);
+        mViewTitle.setOnClickListener(this);
+        mCheck.setOnClickListener(this);
     }
 
     private boolean getIncomingIntent() {
@@ -167,5 +170,29 @@ public class NoteActivity extends AppCompatActivity implements
     @Override
     public boolean onDoubleTapEvent(@NonNull MotionEvent motionEvent) {
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.toolbar_check:
+                disableEditMode();
+                break;
+            case R.id.note_text_title:
+                mEditTitle.requestFocus();
+                mEditTitle.setSelection(mEditTitle.length());
+                enableEditMode();
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (mMode == EDIT_MODE_ENABLED) {
+            onClick(mCheck);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
