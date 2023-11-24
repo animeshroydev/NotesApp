@@ -1,16 +1,25 @@
 package com.animeshpreps.notes;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.animeshpreps.notes.models.Note;
 import com.animeshpreps.notes.util.LinedEditText;
 
-public class NoteActivity extends AppCompatActivity {
+public class NoteActivity extends AppCompatActivity implements
+        View.OnTouchListener,
+        GestureDetector.OnGestureListener,
+        GestureDetector.OnDoubleTapListener
+{
 
     private static final String TAG = "NoteActivity";
 
@@ -22,6 +31,7 @@ public class NoteActivity extends AppCompatActivity {
     // vars
     private boolean mIsNewNote;
     private Note mInitialNote;
+    private GestureDetector mGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,13 @@ public class NoteActivity extends AppCompatActivity {
             setNoteProperties();
         }
 
+        setListener();
+
+    }
+
+    private void setListener() {
+        mLinedEditText.setOnTouchListener(this);
+        mGestureDetector = new GestureDetector(this, this);
     }
 
     private boolean getIncomingIntent() {
@@ -63,5 +80,58 @@ public class NoteActivity extends AppCompatActivity {
     private void setNewNoteProperties() {
         mViewTitle.setText("Note Title");
         mEditTitle.setText("Note Title");
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+
+        return mGestureDetector.onTouchEvent(motionEvent);
+    }
+
+    @Override
+    public boolean onDown(@NonNull MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(@NonNull MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(@NonNull MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(@Nullable MotionEvent motionEvent, @NonNull MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(@NonNull MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(@Nullable MotionEvent motionEvent, @NonNull MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(@NonNull MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(@NonNull MotionEvent motionEvent) {
+        Log.d(TAG, "onDoubleTap: double tapped");
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(@NonNull MotionEvent motionEvent) {
+        return false;
     }
 }
