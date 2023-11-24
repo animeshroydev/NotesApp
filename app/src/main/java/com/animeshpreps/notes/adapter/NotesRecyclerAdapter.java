@@ -1,5 +1,6 @@
 package com.animeshpreps.notes.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.animeshpreps.notes.R;
 import com.animeshpreps.notes.models.Note;
+import com.animeshpreps.notes.util.Utility;
 
 import java.util.ArrayList;
 
@@ -36,8 +38,18 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.timeStamp.setText(mNotes.get(position).getTimestamp());
-        holder.title.setText(mNotes.get(position).getTitle());
+        try {
+            String month = mNotes.get(position).getTimestamp().substring(0, 2);
+            month = Utility.getMonthFromNumber(month);
+            String year = mNotes.get(position).getTimestamp().substring(3);
+            String timestamp = month + " " + year;
+            holder.timeStamp.setText(timestamp);
+            holder.title.setText(mNotes.get(position).getTitle());
+        } catch (NullPointerException e) {
+            Log.e("TAG", "onBindViewHolder: NullPointerException", e);
+        }
+
+
     }
 
     @Override

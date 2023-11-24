@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.animeshpreps.notes.models.Note;
 import com.animeshpreps.notes.persistance.NoteRepository;
 import com.animeshpreps.notes.util.LinedEditText;
+import com.animeshpreps.notes.util.Utility;
 
 public class NoteActivity extends AppCompatActivity implements
         View.OnTouchListener,
@@ -123,7 +124,7 @@ public class NoteActivity extends AppCompatActivity implements
         if (temp.length() > 0) {
             mFinalNote.setTitle(mEditTitle.getText().toString());
             mFinalNote.setContent(mLinedEditText.getText().toString());
-            String timestamp = "Jan 2023";
+            String timestamp = Utility.getCurrentTimestamp();
             mFinalNote.setTimestamp(timestamp);
 
             if (!mFinalNote.getContent().equals(mInitialNote.getContent())
