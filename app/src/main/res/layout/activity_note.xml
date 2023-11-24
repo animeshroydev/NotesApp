@@ -26,9 +26,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <EditText
+    <com.animeshpreps.notes.util.LinedEditText
         android:id="@+id/note_text"
         android:textSize="23sp"
+        android:padding="5dp"
+        android:gravity="top"
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
