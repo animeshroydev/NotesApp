@@ -31,6 +31,7 @@
         android:textSize="23sp"
         android:padding="5dp"
         android:gravity="top"
+        android:imeOptions="flagNoExtractUi"
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

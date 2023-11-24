@@ -226,11 +226,25 @@ public class NoteActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-
         if (mMode == EDIT_MODE_ENABLED) {
             onClick(mCheck);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("mode", mMode);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mMode = savedInstanceState.getInt("mode");
+        if (mMode == EDIT_MODE_ENABLED) {
+            enableEditMode();
         }
     }
 }
